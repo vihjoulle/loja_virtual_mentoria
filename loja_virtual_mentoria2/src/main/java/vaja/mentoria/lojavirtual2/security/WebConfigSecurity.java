@@ -1,32 +1,22 @@
 package vaja.mentoria.lojavirtual2.security;
 
-import java.lang.annotation.Annotation;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-import jakarta.servlet.http.HttpSessionListener;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
-public abstract class WebConfigSecurity extends WebSecurityConfigurerAdapter implements HttpSessionListener {
+@EnableMethodSecurity
+public class WebConfigSecurity {
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
+    }
 
-    @Override
-	public
-    WebConfigSecurity(WebSecurity web) throws Exception {
-		web.ignoring().requestMatchers(HttpMethod.GET, "/salvarAcesso", "/deleteAcesso")
-		.requestMatchers(HttpMethod.POST, "/salvarAcesso", "/deleteAcesso");
-		/*Ingnorando URL no momento para nao autenticar*/
-	}
-
-	@Override
-	public Class<? extends Annotation> annotationType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
 }
